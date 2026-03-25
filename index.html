@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>مواقيت العثماني</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- شاشة البداية -->
+    <div id="splashScreen" class="splash-screen">
+        <div class="splash-content">
+            <div class="title-line">مواقيت العثماني</div>
+            <div class="text-line">هذا التطبيق صممه <span class="highlight">عبد السلام عثماني</span></div>
+            <div class="contact-line">📞 للاتصال: <span class="contact-number">0771366602</span></div>
+            <div class="warning-line">⛔ يمنع منعاً باتاً بيعه والمتاجرة به ⛔</div>
+            <div class="version-line">الإصدار 1.0.0</div>
+        </div>
+    </div>
+
+    <div id="mainAppContent">
+        <!-- اسم المسجد -->
+        <div id="mosqueNameDisplay">اسم المسجد</div>
+        
+        <!-- زر الإعدادات -->
+        <button class="only-settings-btn" id="onlySettingsBtn"></button>
+        
+        <div id="weatherBox"><div id="tempDegree">-- °C</div></div>
+        <div id="permanentLogo">
+            <div class="logo-arabic">مواقيت العثماني</div>
+            <div class="logo-english">MAWAQIT AL-OTMANI</div>
+        </div>
+
+        <!-- الإطار العلوي -->
+        <div id="topHeader">
+            <div class="sideBox"><div>الشروق</div><div id="sunriseVal">--:--</div></div>
+            <div id="clockContainer">
+                <div id="clock" class="clock-3d">00:00:00</div>
+                <div id="dateText" class="date-3d">الإثنين 23 مارس 2026 م</div>
+                <div id="countdownText">متبقي لصلاة الفجر: -- ساعة -- دقيقة</div>
+            </div>
+            <div class="sideBox"><div>الجمعة</div><div id="fridayVal">12:30</div></div>
+        </div>
+
+        <!-- شبكة الصلوات -->
+        <div class="prayerGrid">
+            <div class="pCard" id="prayerFajrCard"><span>الفجر</span><b id="fajrTime">--:--</b></div>
+            <div class="pCard" id="prayerDhuhrCard"><span>الظهر</span><b id="dhuhrTime">--:--</b></div>
+            <div class="pCard" id="prayerAsrCard"><span>العصر</span><b id="asrTime">--:--</b></div>
+            <div class="pCard" id="prayerMaghribCard"><span>المغرب</span><b id="maghribTime">--:--</b></div>
+            <div class="pCard" id="prayerIshaCard"><span>العشاء</span><b id="ishaTime">--:--</b></div>
+        </div>
+
+        <!-- شريط الإعلانات -->
+        <footer id="newsTicker"><div class="ticker" id="tickerText"></div></footer>
+
+        <!-- ========== شاشات الإعدادات ========== -->
+        <div class="settings-screen" id="settingsScreen">
+            <div class="settings-header"><h2>الإعدادات</h2><button class="close-settings">✕</button></div>
+            <div class="settings-menu">
+                <div class="menu-item" data-section="mosque">🕌 اسم المسجد</div>
+                <div class="menu-item" data-section="prayer">⏰ أوقات الصلاة</div>
+                <div class="menu-item" data-section="iqama">📢 الإقامة ومدة الصلاة</div>
+                <div class="menu-item" data-section="friday">🕋 صلاة الجمعة</div>
+                <div class="menu-item" data-section="shutdown">⏸️ الإطفاء التلقائي</div>
+                <div class="menu-item" data-section="background">🖼️ الخلفيات</div>
+                <div class="menu-item" data-section="ads">📺 الإعلانات</div>
+                <div class="menu-item" data-section="hadith">📖 الحديث النبوي</div>
+                <div class="menu-item" data-section="hijri">📅 التاريخ الهجري</div>
+            </div>
+        </div>
+
+        <!-- صفحة اسم المسجد -->
+        <div class="settings-page" id="page-mosque">
+            <div class="settings-header"><button class="back-btn">↩</button><h2>اسم المسجد</h2><button class="close-settings">✕</button></div>
+            <div class="settings-content"><div class="setting-item"><label>اسم المسجد</label><input type="text" id="mosqueName" value="اسم المسجد"></div><button class="save-btn" data-page="mosque">حفظ</button></div>
+        </div>
+
+        <!-- صفحة أوقات الصلاة -->
+        <div class="settings-page" id="page-prayer">
+            <div class="settings-header"><button class="back-btn">↩</button><h2>أوقات الصلاة</h2><button class="close-settings">✕</button></div>
+            <div class="settings-content">
+                <div class="setting-item"><label>الدولة</label><select id="countrySelect"></select></div>
+                <div class="setting-item"><label>المدينة / الولاية</label><select id="citySelect"></select></div>
+                <div class="setting-item"><label>طريقة التحديد</label><div class="radio-group"><label><input type="radio" name="prayerMethod" value="auto" checked> أوتوماتيكي</label><label><input type="radio" name="prayerMethod" value="manual"> يدوي</label></div></div>
+                <div id="autoPrayerSection">
+                    <div class="setting-item"><label>طريقة الحساب</label><select id="calculationMethod">
+                        <option value="99">مخصص (زوايا يدوية)</option>
+                        <option value="8_dz">وزارة الشؤون الدينية الجزائرية (فجر 18، عشاء 17)</option>
+                        <option value="7_ma">وزارة الأوقاف المغربية (فجر 18، عشاء 17)</option>
+                        <option value="2">رابطة العالم الإسلامي</option>
+                        <option value="3">الجمعية الإسلامية لأمريكا الشمالية</option>
+                        <option value="4">جامعة أم القرى</option>
+                        <option value="5">الهيئة المصرية العامة للمساحة</option>
+                        <option value="13">تركيا (رئاسة الشؤون الدينية)</option>
+                        <option value="10">قطر (وزارة الأوقاف)</option>
+                        <option value="12">الإمارات (الهيئة العامة)</option>
+                        <option value="9">الكويت (وزارة الأوقاف)</option>
+                        <option value="11">البحرين (وزارة العدل)</option>
+                        <option value="15">عمان (وزارة الأوقاف)</option>
+                        <option value="16">باكستان (جامعة العلوم الإسلامية)</option>
+                        <option value="14">تونس (وزارة الشؤون الدينية)</option>
+                        <option value="17">الهند (الندوة العالمية)</option>
+                        <option value="18">روسيا (الاتحاد الإسلامي)</option>
+                        <option value="19">سنغافورة (إدارة الشؤون الإسلامية)</option>
+                        <option value="20">ماليزيا (إدارة التنمية الإسلامية)</option>
+                        <option value="21">فرنسا (اتحاد المنظمات الإسلامية)</option>
+                        <option value="22">ألمانيا (مجلس الإفتاء)</option>
+                    </select></div>
+                    <div id="angleInputs" style="display: none;">
+                        <div class="setting-item"><label>زاوية الفجر (لخيار مخصص)</label><input type="number" id="customFajrAngle" value="18" step="0.5"></div>
+                        <div class="setting-item"><label>زاوية العشاء (لخيار مخصص)</label><input type="number" id="customIshaAngle" value="18" step="0.5"></div>
+                    </div>
+                </div>
+                <div id="manualPrayerSection" style="display:none">
+                    <div class="setting-item"><label>الفجر</label><div class="time-input-group"><input type="number" id="fajrHour" min="0" max="23" value="05" class="hour-input"> : <input type="number" id="fajrMinute" min="0" max="59" value="00" class="minute-input"></div></div>
+                    <div class="setting-item"><label>الظهر</label><div class="time-input-group"><input type="number" id="dhuhrHour" min="0" max="23" value="12" class="hour-input"> : <input type="number" id="dhuhrMinute" min="0" max="59" value="30" class="minute-input"></div></div>
+                    <div class="setting-item"><label>العصر</label><div class="time-input-group"><input type="number" id="asrHour" min="0" max="23" value="15" class="hour-input"> : <input type="number" id="asrMinute" min="0" max="59" value="30" class="minute-input"></div></div>
+                    <div class="setting-item"><label>المغرب</label><div class="time-input-group"><input type="number" id="maghribHour" min="0" max="23" value="18" class="hour-input"> : <input type="number" id="maghribMinute" min="0" max="59" value="45" class="minute-input"></div></div>
+                    <div class="setting-item"><label>العشاء</label><div class="time-input-group"><input type="number" id="ishaHour" min="0" max="23" value="20" class="hour-input"> : <input type="number" id="ishaMinute" min="0" max="59" value="00" class="minute-input"></div></div>
+                </div>
+                <h3>تصحيح الوقت (دقائق)</h3>
+                <div class="setting-item adjust-row"><label>الفجر</label><div class="adjust-control"><button class="adjust-minus" data-target="fajrAdjust">-</button><input type="number" id="fajrAdjust" value="0" class="adjust-input"><button class="adjust-plus" data-target="fajrAdjust">+</button></div></div>
+                <div class="setting-item adjust-row"><label>الظهر</label><div class="adjust-control"><button class="adjust-minus" data-target="dhuhrAdjust">-</button><input type="number" id="dhuhrAdjust" value="0" class="adjust-input"><button class="adjust-plus" data-target="dhuhrAdjust">+</button></div></div>
+                <div class="setting-item adjust-row"><label>العصر</label><div class="adjust-control"><button class="adjust-minus" data-target="asrAdjust">-</button><input type="number" id="asrAdjust" value="0" class="adjust-input"><button class="adjust-plus" data-target="asrAdjust">+</button></div></div>
+                <div class="setting-item adjust-row"><label>المغرب</label><div class="adjust-control"><button class="adjust-minus" data-target="maghribAdjust">-</button><input type="number" id="maghribAdjust" value="0" class="adjust-input"><button class="adjust-plus" data-target="maghribAdjust">+</button></div></div>
+                <div class="setting-item adjust-row"><label>العشاء</label><div class="adjust-control"><button class="adjust-minus" data-target="ishaAdjust">-</button><input type="number" id="ishaAdjust" value="0" class="adjust-input"><button class="adjust-plus" data-target="ishaAdjust">+</button></div></div>
+                <button class="save-btn" data-page="prayer">حفظ</button>
+            </div>
+        </div>
+
+        <!-- باقي صفحات الإعدادات (كما هي في الكود السابق) -->
+        <div class="settings-page" id="page-iqama">
+            <div class="settings-header"><button class="back-btn">↩</button><h2>الإقامة ومدة الصلاة</h2><button class="close-settings">✕</button></div>
+            <div class="settings-content">
+                <h3>مدة الإقامة (دقائق)</h3>
+                <div class="setting-item"><label>الفجر</label><input type="number" id="fajrIqama" value="10"></div>
+                <div class="setting-item"><label>الظهر</label><input type="number" id="dhuhrIqama" value="10"></div>
+                <div class="setting-item"><label>العصر</label><input type="number" id="asrIqama" value="10"></div>
+                <div class="setting-item"><label>المغرب</label><input type="number" id="maghribIqama" value="5"></div>
+                <div class="setting-item"><label>العشاء</label><input type="number" id="ishaIqama" value="10"></div>
+                <h3>مدة الصلاة (دقائق)</h3>
+                <div class="setting-item"><label>الفجر</label><input type="number" id="fajrDuration" value="15"></div>
+                <div class="setting-item"><label>الظهر</label><input type="number" id="dhuhrDuration" value="15"></div>
+                <div class="setting-item"><label>العصر</label><input type="number" id="asrDuration" value="15"></div>
+                <div class="setting-item"><label>المغرب</label><input type="number" id="maghribDuration" value="15"></div>
+                <div class="setting-item"><label>العشاء</label><input type="number" id="ishaDuration" value="15"></div>
+                <button class="save-btn" data-page="iqama">حفظ</button>
+            </div>
+        </div>
+
+        <div class="settings-page" id="page-friday">
+            <div class="settings-header"><button class="back-btn">↩</button><h2>صلاة الجمعة</h2><button class="close-settings">✕</button></div>
+            <div class="settings-content">
+                <div class="setting-item"><label>وقت صلاة الجمعة</label><div class="time-input-group"><input type="number" id="fridayHour" min="0" max="23" value="12" class="hour-input"> : <input type="number" id="fridayMinute" min="0" max="59" value="30" class="minute-input"></div></div>
+                <div class="setting-item"><label>مدة صلاة الجمعة (دقائق)</label><input type="number" id="fridayDuration" value="30"></div>
+                <button class="save-btn" data-page="friday">حفظ</button>
+            </div>
+        </div>
+
+        <div class="settings-page" id="page-shutdown">
+            <div class="settings-header"><button class="back-btn">↩</button><h2>الإطفاء التلقائي</h2><button class="close-settings">✕</button></div>
+            <div class="settings-content">
+                <div class="setting-item"><label><input type="checkbox" id="autoShutdown"> تفعيل الإطفاء التلقائي</label></div>
+                <div class="setting-item"><label>وقت الإطفاء</label><div class="time-input-group"><input type="number" id="shutdownHour" min="0" max="23" value="22" class="hour-input"> : <input type="number" id="shutdownMinute" min="0" max="59" value="00" class="minute-input"></div></div>
+                <div class="setting-item"><label>وقت التشغيل</label><div class="time-input-group"><input type="number" id="wakeupHour" min="0" max="23" value="04" class="hour-input"> : <input type="number" id="wakeupMinute" min="0" max="59" value="00" class="minute-input"></div></div>
+                <button class="save-btn" data-page="shutdown">حفظ</button>
+            </div>
+        </div>
+
+        <div class="settings-page" id="page-background">
+            <div class="settings-header"><button class="back-btn">↩</button><h2>الخلفيات</h2><button class="close-settings">✕</button></div>
+            <div class="settings-content">
+                <div class="setting-item"><label>نوع الخلفية</label><div class="radio-group"><label><input type="radio" name="bgType" value="gallery" checked> معرض الصور</label><label><input type="radio" name="bgType" value="custom"> صورة مخصصة</label></div></div>
+                <div id="gallerySection"><div class="setting-item"><label>اختر صورة</label><select id="imageSelect"></select></div></div>
+                <div id="customImageSection" style="display:none"><div class="setting-item"><label>رفع صورة</label><input type="file" id="customImageFile" accept="image/*"></div><div id="customImagePreview"></div></div>
+                <button class="save-btn" data-page="background">حفظ</button>
+            </div>
+        </div>
+
+        <div class="settings-page" id="page-ads">
+            <div class="settings-header"><button class="back-btn">↩</button><h2>الإعلانات</h2><button class="close-settings">✕</button></div>
+            <div class="settings-content">
+                <div class="setting-item"><label><input type="checkbox" id="disableAllAds"> تعطيل جميع الإعلانات</label></div>
+                <div class="setting-item"><label><input type="checkbox" id="enableTicker"> تفعيل شريط الإعلانات</label></div>
+                <div id="tickerSettings" style="display:none"><div class="setting-item"><label>نص الشريط</label><input type="text" id="tickerTextInput" placeholder="أدخل نص الإعلان"></div><div class="setting-item"><label>اتجاه الشريط</label><div class="radio-group"><label><input type="radio" name="tickerDirection" value="ltr"> من اليسار لليمين</label><label><input type="radio" name="tickerDirection" value="rtl"> من اليمين لليسار</label></div></div></div>
+                <div class="setting-item"><label><input type="checkbox" id="enableFlashAd"> تفعيل الإعلانات المنبثقة</label></div>
+                <div id="flashSettings" style="display:none"><div class="setting-item"><label>نوع الإعلان</label><div class="radio-group"><label><input type="radio" name="adType" value="flash"> فلاش (يظهر لمدة 10 ثواني)</label><label><input type="radio" name="adType" value="permanent"> دائم (يغطي الشاشة)</label></div></div><div class="setting-item"><label>نص الإعلان</label><input type="text" id="adText" placeholder="أدخل نص الإعلان"></div><div class="setting-item"><label>صورة الإعلان (اختياري)</label><input type="file" id="adImage" accept="image/*"></div></div>
+                <button class="save-btn" data-page="ads">حفظ</button>
+            </div>
+        </div>
+
+        <div class="settings-page" id="page-hadith">
+            <div class="settings-header"><button class="back-btn">↩</button><h2>الحديث النبوي</h2><button class="close-settings">✕</button></div>
+            <div class="settings-content">
+                <div class="setting-item"><label><input type="checkbox" id="enableHadith" checked> تفعيل عرض الأحاديث</label></div>
+                <div class="setting-item"><label>الفاصل الزمني (دقائق)</label><input type="number" id="hadithInterval" value="5" min="1" max="60"></div>
+                <button class="save-btn" data-page="hadith">حفظ</button>
+            </div>
+        </div>
+
+        <div class="settings-page" id="page-hijri">
+            <div class="settings-header"><button class="back-btn">↩</button><h2>التاريخ الهجري</h2><button class="close-settings">✕</button></div>
+            <div class="settings-content">
+                <div class="setting-item"><label>ضبط التاريخ الهجري</label><div><button class="adjust-btn" data-value="-3">-3</button><button class="adjust-btn" data-value="-2">-2</button><button class="adjust-btn" data-value="-1">-1</button><button class="adjust-btn" data-value="0">0</button><button class="adjust-btn" data-value="1">+1</button><button class="adjust-btn" data-value="2">+2</button><button class="adjust-btn" data-value="3">+3</button></div></div>
+                <button class="save-btn" data-page="hijri">حفظ</button>
+            </div>
+        </div>
+
+        <!-- الشاشات الأخرى -->
+        <div id="azanScreen" class="fullscreen black"><div class="azan-frame"><div class="prayer-name-large blinking-text" id="azanPrayerName">حان الآن موعد آذان صلاة الفجر</div></div></div>
+        <div id="duaScreen" class="fullscreen black"><div class="dua-frame"><div id="duaText" class="dua-large-text">اللهم رب هذه الدعوة التامة<br>والصلاة القائمة، آت محمداً الوسيلة والفضيلة<br>وابعهثه مقاماً محموداً الذي وعدته</div></div></div>
+        <div id="iqamaCountdownScreen" class="fullscreen black"><div class="countdown-frame"><div id="countdownNumber">10:00</div><div id="countdownLabel">دقائق متبقية للإقامة</div></div></div>
+        <div id="iqamaScreen" class="fullscreen black"><div class="iqama-frame"><div class="iqama-title">قد قامت الصلاة</div><div class="iqama-circle"><div class="phone-forbidden"><div class="phone-icon">📱</div><div class="forbidden-line"></div></div></div><div class="silent-note">يرجى إغلاق الهواتف المحمولة</div></div></div>
+        <div id="prayerScreen" class="fullscreen black" style="background: black;"></div>
+        <div id="adhkarScreen" class="fullscreen black"><div class="adhkar-frame"><div id="adhkarContent"></div><div id="adhkarPage" class="adhkar-page">1 / 8</div></div></div>
+        <div id="morningAdhkarScreen" class="fullscreen black"><div class="adhkar-frame"><div id="morningAdhkarContent"></div><div id="morningAdhkarPage" class="adhkar-page">1 / 23</div></div></div>
+        <div id="eveningAdhkarScreen" class="fullscreen black"><div class="adhkar-frame"><div id="eveningAdhkarContent"></div><div id="eveningAdhkarPage" class="adhkar-page">1 / 23</div></div></div>
+        <div id="hadithScreen" class="fullscreen black"><div class="hadith-frame"><div id="hadithText"></div></div></div>
+        <div id="flashAdScreen" class="fullscreen black"><div class="flash-ad-wrapper"><div id="flashAdContent" class="flash-ad-content-area"></div></div></div>
+        <div id="permanentAdScreen" class="fullscreen black">
+            <div class="flash-ad-wrapper">
+                <div id="permAdContent" class="flash-ad-content-area"></div>
+                <button id="disableAdPermanentBtn" class="disable-ad-btn">✖ تعطيل الإعلان</button>
+            </div>
+        </div>
+        <div id="fridayScreen" class="fullscreen black"><div class="azan-frame"><div class="prayer-name-large">صلاة الجمعة</div><div>خطبة الجمعة</div></div></div>
+        <div id="shutdownScreen" class="fullscreen black" style="background: black;"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
