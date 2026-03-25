@@ -1,0 +1,745 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+    --gold: #D4AF37;
+    --card-bg: rgba(0, 0, 0, 0.65);
+    --border-gold: 1px solid rgba(212, 175, 55, 0.5);
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: fixed;
+}
+
+body {
+    font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #000;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+/* شاشة البداية */
+.splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, #1a1a2a, #000);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    color: var(--gold);
+    text-align: center;
+    animation: fadeOut 0.5s ease 3s forwards;
+}
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+.splash-content {
+    animation: fadeInUp 0.8s ease;
+}
+.title-line {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+.text-line {
+    font-size: 1rem;
+    margin: 0.5rem 0;
+}
+.highlight {
+    color: #fff;
+}
+.contact-line {
+    font-size: 1rem;
+    margin: 0.5rem 0;
+    color: #ffaa00;
+}
+.contact-number {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+    direction: ltr;
+    display: inline-block;
+}
+.warning-line {
+    font-size: 0.8rem;
+    color: #ffaa00;
+    margin-top: 2rem;
+}
+.version-line {
+    font-size: 0.7rem;
+    margin-top: 1rem;
+    opacity: 0.7;
+}
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* المحتوى الرئيسي */
+#mainAppContent {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 30% 30%, #2a2a3a, #000);
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* اسم المسجد */
+#mosqueNameDisplay {
+    position: fixed;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: 1.3rem;
+    color: var(--gold);
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    padding: 6px 20px;
+    border-radius: 40px;
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    z-index: 150;
+    pointer-events: none;
+    white-space: nowrap;
+    max-width: 90%;
+    overflow-x: auto;
+    font-weight: 500;
+}
+
+/* زر الإعدادات الرئيسي - ثلاث خطوط أفقية */
+.only-settings-btn {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    width: 32px;
+    height: 32px;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    border-radius: 8px;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    cursor: pointer;
+    z-index: 9999999 !important;
+    display: none; /* يظهر فقط في الشاشة الرئيسية عبر JS */
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    pointer-events: auto !important;
+    font-family: monospace;
+    font-size: 1.5rem;
+    font-weight: normal;
+    line-height: 1;
+}
+.only-settings-btn:hover {
+    transform: scale(1.05);
+    background: rgba(0, 0, 0, 0.9);
+}
+.only-settings-btn::before {
+    content: "≡";
+}
+
+/* زر تعطيل الإعلان داخل الإعلان الدائم */
+.disable-ad-btn {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(12px);
+    border: 2px solid #ff5555;
+    color: #ff5555;
+    font-size: 0.9rem;
+    font-weight: bold;
+    padding: 8px 15px;
+    border-radius: 30px;
+    cursor: pointer;
+    z-index: 9999999 !important;
+    transition: all 0.2s ease;
+    pointer-events: auto !important;
+    font-family: inherit;
+    white-space: nowrap;
+}
+.disable-ad-btn:hover {
+    background: #ff5555;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* إخفاء أي أزرار إعدادات أخرى */
+.settings-btn, .main-settings-btn, .top-settings-btn {
+    display: none !important;
+}
+
+/* درجة الحرارة */
+#weatherBox {
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    padding: 5px 14px;
+    border-radius: 30px;
+    color: var(--gold);
+    font-size: 1rem;
+    font-weight: bold;
+    z-index: 200;
+    border: 1px solid rgba(212, 175, 55, 0.4);
+}
+
+/* الشعار السفلي - بدون ظل */
+#permanentLogo {
+    position: fixed;
+    bottom: 8px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #FFFFFF;
+    z-index: 55;
+    pointer-events: none;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+.logo-arabic {
+    font-size: 0.9rem;
+}
+.logo-english {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+}
+
+/* الإطار العلوي */
+#topHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    margin: 75px 12px 12px 12px;
+    padding: 10px 12px;
+    border-radius: 35px;
+    border: var(--border-gold);
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.sideBox {
+    text-align: center;
+    color: var(--gold);
+    min-width: 70px;
+}
+.sideBox div:first-child {
+    font-size: 0.75rem;
+    opacity: 0.9;
+}
+.sideBox div:last-child {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+#clockContainer {
+    text-align: center;
+    flex: 2;
+}
+.clock-3d {
+    font-size: 1.7rem;
+    font-weight: bold;
+    color: #fff;
+    letter-spacing: 1px;
+}
+.date-3d {
+    font-size: 0.75rem;
+    color: var(--gold);
+}
+#countdownText {
+    font-size: 0.7rem;
+    color: #ddd;
+    margin-top: 3px;
+}
+
+/* شبكة الصلوات */
+.prayerGrid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    padding: 12px 15px;
+    margin-bottom: 80px;
+}
+.pCard {
+    background: var(--card-bg);
+    backdrop-filter: blur(5px);
+    border: var(--border-gold);
+    border-radius: 25px;
+    text-align: center;
+    padding: 12px 5px;
+    transition: all 0.2s ease;
+}
+.pCard span {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--gold);
+}
+.pCard b {
+    font-size: 1.3rem;
+    color: white;
+}
+.next-prayer {
+    background: rgba(212, 175, 55, 0.3);
+    border: 2px solid var(--gold);
+    transform: scale(1.02);
+}
+.blinking-prayer {
+    animation: blink 1s step-start infinite;
+    background: rgba(212, 175, 55, 0.5);
+}
+@keyframes blink {
+    50% {
+        background: rgba(212, 175, 55, 0.9);
+        border-color: #ffaa00;
+    }
+}
+
+/* شريط الإعلانات */
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    padding: 8px 12px;
+    overflow: hidden;
+    white-space: nowrap;
+    z-index: 70;
+    border-top: 1px solid rgba(212, 175, 55, 0.5);
+    opacity: 0.85;
+}
+.ticker {
+    display: inline-block;
+    white-space: nowrap;
+    animation: tickerMove 20s linear infinite;
+    color: var(--gold);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+.ticker.ltr {
+    animation-direction: normal;
+}
+.ticker.rtl {
+    animation-direction: reverse;
+}
+@keyframes tickerMove {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+/* شاشات الإعدادات */
+.settings-screen,
+.settings-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.96);
+    z-index: 2000;
+    display: none;
+    flex-direction: column;
+    color: white;
+    overflow-y: auto;
+    pointer-events: auto;
+}
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--gold);
+    background: #111;
+}
+.settings-header h2 {
+    color: var(--gold);
+    font-size: 1.3rem;
+}
+.close-settings,
+.back-btn {
+    background: none;
+    border: none;
+    color: var(--gold);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+.settings-menu {
+    padding: 20px;
+}
+.menu-item {
+    padding: 15px;
+    border-bottom: 1px solid #333;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+.menu-item:hover {
+    background: rgba(212, 175, 55, 0.2);
+    padding-right: 25px;
+}
+.settings-content {
+    padding: 20px;
+}
+.setting-item {
+    margin-bottom: 20px;
+}
+.setting-item label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--gold);
+    font-size: 1rem;
+}
+input, select {
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #555;
+    background: #222;
+    color: white;
+    width: 100%;
+    font-size: 1rem;
+}
+.radio-group {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.radio-group label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.adjust-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.adjust-control {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.adjust-control button {
+    background: var(--gold);
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #000;
+}
+.adjust-input {
+    width: 70px;
+    text-align: center;
+    font-size: 1rem;
+}
+.time-input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.hour-input, .minute-input {
+    width: 70px;
+    text-align: center;
+    font-size: 1rem;
+}
+.save-btn {
+    background: var(--gold);
+    color: #000;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 40px;
+    font-size: 1.1rem;
+    margin-top: 25px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.adjust-btn {
+    background: var(--gold);
+    color: #000;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    margin: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* الشاشات الملء */
+.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+    text-align: center;
+    color: white;
+    pointer-events: none;
+}
+.black {
+    background: black;
+}
+.azan-frame, .dua-frame, .countdown-frame, .iqama-frame, .adhkar-frame, .hadith-frame {
+    width: 85%;
+    max-width: 700px;
+    padding: 25px;
+    border-radius: 40px;
+    background: rgba(0, 0, 0, 0.85);
+    border: 2px solid var(--gold);
+    overflow-y: auto;
+    max-height: 90%;
+    pointer-events: auto;
+}
+.prayer-name-large {
+    font-size: 3rem;
+    color: var(--gold);
+    margin: 20px 0;
+}
+.blinking-text {
+    animation: blinkText 1s step-start infinite;
+}
+@keyframes blinkText {
+    50% {
+        opacity: 0.5;
+        text-shadow: 0 0 10px gold;
+    }
+}
+/* دعاء الأذان - 3 أسطر بحجم كبير */
+.dua-large-text {
+    font-size: 2rem;
+    line-height: 1.8;
+    text-align: center;
+    color: var(--gold);
+    margin: 20px 0;
+}
+#countdownNumber {
+    font-size: 6rem;
+    font-weight: bold;
+    color: var(--gold);
+}
+
+/* شاشة الإقامة */
+.iqama-title {
+    font-size: 3rem;
+    font-weight: bold;
+    color: var(--gold);
+    margin-bottom: 20px;
+}
+.iqama-circle {
+    width: 100px;
+    height: 100px;
+    margin: 20px auto;
+    border-radius: 50%;
+    border: 3px solid #ff3333;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: pulse 1s infinite;
+}
+.phone-forbidden {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.phone-icon {
+    font-size: 2.5rem;
+    color: #fff;
+}
+.forbidden-line {
+    position: absolute;
+    width: 40px;
+    height: 3px;
+    background: #ff3333;
+    transform: rotate(45deg);
+    border-radius: 2px;
+}
+@keyframes pulse {
+    0% { border-color: #ff3333; box-shadow: 0 0 0 0 rgba(255, 51, 51, 0.4); }
+    50% { border-color: #ff8888; box-shadow: 0 0 0 10px rgba(255, 51, 51, 0.2); }
+    100% { border-color: #ff3333; box-shadow: 0 0 0 0 rgba(255, 51, 51, 0); }
+}
+.silent-note {
+    font-size: 1rem;
+    color: #ffaa00;
+    margin-top: 20px;
+}
+
+/* أذكار الصفحات */
+.adhkar-page {
+    text-align: center;
+}
+.adhkar-title {
+    font-size: 1.5rem;
+    color: var(--gold);
+    margin-bottom: 20px;
+}
+.dhikr-row {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+.dhikr-item {
+    font-size: 1.3rem;
+    margin: 10px 0;
+}
+.dhikr-highlight {
+    color: var(--gold);
+    font-weight: bold;
+}
+.ayatul-kursi, .surat-ikhlas, .surat-falaq, .surat-nas {
+    line-height: 1.8;
+    font-size: 1.1rem;
+}
+#adhkarPage, #morningAdhkarPage, #eveningAdhkarPage {
+    margin-top: 20px;
+    color: var(--gold);
+}
+
+/* شاشات الإعلانات - بدون رأس */
+.flash-ad-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: black;
+    display: flex;
+    flex-direction: column;
+    pointer-events: none;
+}
+.flash-ad-content-area {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+.flash-ad-content-area img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.flash-ad-content-text {
+    font-size: 3rem;
+    text-align: center;
+    padding: 20px;
+    color: var(--gold);
+    pointer-events: none;
+}
+
+/* شاشة الحديث */
+.hadith-three-lines {
+    font-size: 1.5rem;
+    line-height: 2;
+    text-align: center;
+}
+.hadith-three-lines .line {
+    margin: 20px 0;
+}
+
+/* الإعلانات */
+#flashAdScreen, #permanentAdScreen {
+    z-index: 3000;
+}
+
+/* شاشة الإطفاء التلقائي - سوداء بالكامل */
+#shutdownScreen {
+    background: black !important;
+}
+#shutdownScreen * {
+    display: none !important;
+}
+
+/* شاشة الصلاة - سوداء بالكامل */
+#prayerScreen {
+    background: black !important;
+}
+#prayerScreen * {
+    display: none !important;
+}
+
+/* الوضع الأفقي */
+@media (orientation: landscape) {
+    #mosqueNameDisplay { top: 10px; font-size: 1.2rem; padding: 5px 18px; }
+    .only-settings-btn { top: 12px; right: 12px; width: 28px; height: 28px; font-size: 1.3rem; }
+    #weatherBox { top: 12px; left: 12px; font-size: 0.9rem; padding: 4px 12px; }
+    #topHeader { margin-top: 65px; padding: 8px 12px; gap: 6px; }
+    .clock-3d { font-size: 1.5rem; }
+    .pCard { padding: 8px 3px; }
+    .pCard b { font-size: 1.1rem; }
+    .pCard span { font-size: 0.8rem; }
+    .prayerGrid { gap: 10px; padding: 8px 15px; margin-bottom: 75px; }
+    footer { bottom: 0; padding: 6px 12px; }
+    .ticker { font-size: 0.85rem; }
+    #permanentLogo { bottom: 6px; font-size: 0.7rem; }
+    .prayer-name-large { font-size: 2.5rem; }
+    .dua-large-text { font-size: 1.5rem; }
+    #countdownNumber { font-size: 5rem; }
+    .iqama-title { font-size: 2.5rem; }
+    .hadith-three-lines { font-size: 1.2rem; }
+    .iqama-circle { width: 80px; height: 80px; }
+    .phone-icon { font-size: 2rem; }
+    .forbidden-line { width: 32px; }
+    .disable-ad-btn { top: 10px; right: 10px; padding: 6px 12px; font-size: 0.8rem; }
+}
+
+@media (min-width: 1280px) and (orientation: landscape) {
+    #mosqueNameDisplay { font-size: 1.5rem; top: 15px; }
+    .only-settings-btn { top: 18px; right: 18px; width: 36px; height: 36px; font-size: 1.6rem; }
+    #weatherBox { font-size: 1.1rem; top: 18px; left: 18px; }
+    .clock-3d { font-size: 1.8rem; }
+    .pCard b { font-size: 1.3rem; }
+    .prayerGrid { gap: 15px; margin-bottom: 90px; }
+    footer { bottom: 0; padding: 8px 16px; }
+    .ticker { font-size: 1rem; }
+    #permanentLogo { bottom: 10px; font-size: 0.85rem; }
+    .prayer-name-large { font-size: 3rem; }
+    .dua-large-text { font-size: 2rem; }
+    .iqama-title { font-size: 3rem; }
+    .iqama-circle { width: 100px; height: 100px; }
+    .disable-ad-btn { top: 15px; right: 15px; padding: 8px 15px; font-size: 0.9rem; }
+}
